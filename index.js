@@ -1,77 +1,66 @@
+var map;
 
 function initialize() {
+  var text, obj;
 
- var text; 
- var obj;
+  var files = ['./data/activity_2041740146.gpx', './data/garminErsterTrack.gpx'];
 
- var client = new XMLHttpRequest();
- 
- //client.open('GET', './data/activity_2041740146.gpx'); 
- client.open('GET', './data/garminErsterTrack.gpx');
- 
- client.onload = function () {
-  var response = client.responseText,
-      parser = new DOMParser(),
-      xmlDoc = parser.parseFromString(response, "text/xml");
+  mapload();
 
-    var index = 0;
-    var la1, lo1, la2, lo2, hr1, hr2, hrAvr;
-    text = '{';
-    text += '"type": "FeatureCollection",\n' +
-      '"name": "gpxFile1",\n' +
-      ' "features": [\n';
+  for (let index = 0; index < files.length; index++) {
+    var client = new XMLHttpRequest();
 
-    while (xmlDoc.getElementsByTagName("trkpt")[index] != null) {
+    client.open('GET', files[index], false);
 
-      la1 = xmlDoc.getElementsByTagName("trkpt")[index].getAttribute("lat");
-      lo1 = xmlDoc.getElementsByTagName("trkpt")[index].getAttribute("lon");
-      hr1 = xmlDoc.getElementsByTagName("trkpt")[index].getElementsByTagName("extensions")[0].childNodes[1].getElementsByTagName("ns3:hr")[0].childNodes[0].nodeValue
+    client.onload = function () {
+      var response = client.responseText,
+        parser = new DOMParser(),
+        xmlDoc = parser.parseFromString(response, 'text/xml');
 
-      if (xmlDoc.getElementsByTagName("trkpt")[index + 1] != null) {
-        la2 = xmlDoc.getElementsByTagName("trkpt")[index + 1].getAttribute("lat");
-        lo2 = xmlDoc.getElementsByTagName("trkpt")[index + 1].getAttribute("lon");
-        hr2 = xmlDoc.getElementsByTagName("trkpt")[index + 1].getElementsByTagName("extensions")[0].childNodes[1].getElementsByTagName("ns3:hr")[0].childNodes[0].nodeValue;
-        hrAvr = ((parseFloat(hr1) + parseFloat(hr2)) / 2);
-        
-        text += '{ "type": "Feature", "properties": {  "Latitude": ' + la1 + ', "Longitude": ' + lo1 + ', "Heartrate": ' + hrAvr + '}, "geometry": { "type": "LineString", "coordinates": [ [ ' + lo1 + ', ' +  la1 + ' ], [ ' + lo2 + ', ' +  la2+ '  ] ]  } }\n'
+      var index = 0;
+      var la1, lo1, la2, lo2, hr1, hr2, hrAvr;
+      text = '{';
+      text += '"type": "FeatureCollection",\n' + '"name": "gpxFile1",\n' + ' "features": [\n';
 
-      }
-      else {
-        text += '{ "type": "Feature", "properties": {  "Latitude": ' + la1 + ', "Longitude": ' + lo1 + ', "Heartrate": ' + hr1 + '}, "geometry": { "type": "LineString", "coordinates": [ [ ' + lo1 + ', ' + la1 + ' ], [ ' + lo1 + ', ' + la1 + '  ] ] } }'
+      while (xmlDoc.getElementsByTagName('trkpt')[index] != null) {
+        la1 = xmlDoc.getElementsByTagName('trkpt')[index].getAttribute('lat');
+        lo1 = xmlDoc.getElementsByTagName('trkpt')[index].getAttribute('lon');
+        hr1 = xmlDoc.getElementsByTagName('trkpt')[index].getElementsByTagName('extensions')[0].childNodes[1].getElementsByTagName('ns3:hr')[0].childNodes[0].nodeValue;
 
-      }
+        if (xmlDoc.getElementsByTagName('trkpt')[index + 1] != null) {
+          la2 = xmlDoc.getElementsByTagName('trkpt')[index + 1].getAttribute('lat');
+          lo2 = xmlDoc.getElementsByTagName('trkpt')[index + 1].getAttribute('lon');
+          hr2 = xmlDoc.getElementsByTagName('trkpt')[index + 1].getElementsByTagName('extensions')[0].childNodes[1].getElementsByTagName('ns3:hr')[0].childNodes[0].nodeValue;
+          hrAvr = (parseFloat(hr1) + parseFloat(hr2)) / 2;
 
-      index ++;
+          text += '{ "type": "Feature", "properties": {  "Latitude": ' + la1 + ', "Longitude": ' + lo1 + ', "Heartrate": ' + hrAvr + '}, "geometry": { "type": "LineString", "coordinates": [ [ ' + lo1 + ', ' + la1 + ' ], [ ' + lo2 + ', ' + la2 + '  ] ]  } }\n';
+        } else {
+          text += '{ "type": "Feature", "properties": {  "Latitude": ' + la1 + ', "Longitude": ' + lo1 + ', "Heartrate": ' + hr1 + '}, "geometry": { "type": "LineString", "coordinates": [ [ ' + lo1 + ', ' + la1 + ' ], [ ' + lo1 + ', ' + la1 + '  ] ] } }';
+        }
 
-      if (xmlDoc.getElementsByTagName("trkpt")[index] != null) {
-        text += ',';
+        index++;
+
+        if (xmlDoc.getElementsByTagName('trkpt')[index] != null) {
+          text += ',';
+        }
       }
 
-    }
-
-    text += ']}';
-    obj = JSON.parse(text);
-    mapload(obj)
-
+      text += ']}';
+      obj = JSON.parse(text);
+      addRoutes(obj);
+    };
+    client.send();
   }
-  client.send();
 }
 
-function mapload(obj) {
-  var map
+function addRoutes(obj) {
+  console.log(obj);
   function onEachFeature(feature, layer) {
-    layer.bindPopup(
-      '<h4>' +
-      '</h4><p>Puls: ' + feature.properties.Heartrate + " BpM"
-        );
+    layer.bindPopup('<h4>' + '</h4><p>Puls: ' + feature.properties.Heartrate + ' BpM');
   }
 
   function getColor(d) {
-    return d > 110 ? '#ad0900' :
-                d > 90 ? '#ad6200' :
-                d > 70 ? '#9fad00' :
-                d > 40 ? '#00ad0c' :
-                '#000';
+    return d > 110 ? '#ad0900' : d > 90 ? '#ad6200' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
   }
 
   function style(feature) {
@@ -80,26 +69,21 @@ function mapload(obj) {
       color: getColor(feature.properties.Heartrate)
     };
   }
-  console.log()
-
-  map = L.map('map_canvas').setView([48.77339324913919, 9.172363495454192], 16);
-
 
   L.geoJSON(obj, {
     onEachFeature: onEachFeature,
-    style: style,
+    style: style
   }).addTo(map);
-  console.log()
 
-  L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]]).bindPopup("Start").addTo(map);
-  L.marker([obj.features[obj.features.length-1].geometry.coordinates[0][1], obj.features[obj.features.length-1].geometry.coordinates[0][0]]).bindPopup("Ende").addTo(map);
-
+  L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]]).bindPopup('Start').addTo(map);
+  L.marker([obj.features[obj.features.length - 1].geometry.coordinates[0][1], obj.features[obj.features.length - 1].geometry.coordinates[0][0]])
+    .bindPopup('Ende')
+    .addTo(map);
 
   var legend = L.control({ position: 'bottomleft' });
 
   legend.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info legend')
+    var div = L.DomUtil.create('div', 'info legend');
     //div.innerHTML += 'Baujahr <br>';
     // loop through our density intervals and generate a label with a colored square for each interval
     //for (var i = 10; i < years.length; i += 10) {
@@ -120,7 +104,10 @@ function mapload(obj) {
   };
 
   legend.addTo(map);
+}
 
+function mapload() {
+  map = L.map('map_canvas').setView([48.77339324913919, 9.172363495454192], 16);
 
   var osm = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>     contributors',
@@ -129,5 +116,4 @@ function mapload(obj) {
   });
 
   map.addLayer(osm);
-
 }
