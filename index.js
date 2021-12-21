@@ -60,7 +60,7 @@ function addRoutes(obj) {
   }
 
   function getColor(d) {
-    return d > 110 ? '#ad0900' : d > 90 ? '#ad6200' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+    return d > 110 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
   }
 
   function style(feature) {
