@@ -1,10 +1,14 @@
 
 function initialize() {
 
-  var text;
+ var text; 
+ var obj;
 
  var client = new XMLHttpRequest();
- client.open('GET', './data/activity_2041740146.gpx');
+ 
+ //client.open('GET', './data/activity_2041740146.gpx'); 
+ client.open('GET', './data/garminErsterTrack.gpx');
+ 
  client.onload = function () {
   var response = client.responseText,
       parser = new DOMParser(),
@@ -22,8 +26,6 @@ function initialize() {
       la1 = xmlDoc.getElementsByTagName("trkpt")[index].getAttribute("lat");
       lo1 = xmlDoc.getElementsByTagName("trkpt")[index].getAttribute("lon");
       hr1 = xmlDoc.getElementsByTagName("trkpt")[index].getElementsByTagName("extensions")[0].childNodes[1].getElementsByTagName("ns3:hr")[0].childNodes[0].nodeValue
-
-      //text += '{ "lat":' + la1 + ' , "lon":' + lo1 + ' }';
 
       if (xmlDoc.getElementsByTagName("trkpt")[index + 1] != null) {
         la2 = xmlDoc.getElementsByTagName("trkpt")[index + 1].getAttribute("lat");
@@ -48,7 +50,7 @@ function initialize() {
     }
 
     text += ']}';
-    var obj = JSON.parse(text);
+    obj = JSON.parse(text);
     mapload(obj)
 
   }
@@ -89,8 +91,8 @@ function mapload(obj) {
   }).addTo(map);
   console.log()
 
-  L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]]).addTo(map);
-  L.marker([obj.features[obj.features.length-1].geometry.coordinates[0][1], obj.features[obj.features.length-1].geometry.coordinates[0][0]]).addTo(map);
+  L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]]).bindPopup("Start").addTo(map);
+  L.marker([obj.features[obj.features.length-1].geometry.coordinates[0][1], obj.features[obj.features.length-1].geometry.coordinates[0][0]]).bindPopup("Ende").addTo(map);
 
 
   var legend = L.control({ position: 'bottomleft' });
