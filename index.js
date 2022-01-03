@@ -21,7 +21,7 @@ var flagG = L.icon({
 function initialize() {
   var text, obj;
 
-  var files = ['./data/activity_2041740146.gpx', './data/garminErsterTrack.gpx'];
+  var files = ['./data/BSP_Datensatz.gpx', './data/Track1.gpx', './data/Track2.gpx'];
 
   mapload();
 
@@ -90,7 +90,7 @@ function addRoutes(obj) {
   }
 
   function getColor(d) {
-    return d > 109 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+    return d > 144 ? '#000': d > 140 ? '#700600': d > 134 ? '#d11800' : d > 124 ? '#d13800' : d > 109 ? '#d15700' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
   }
 
   function style(feature) {
@@ -106,8 +106,8 @@ function addRoutes(obj) {
   });
 
 
-  layers.addLayer(L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]], {icon: flagR}).bindPopup('Start'));
-  layers.addLayer(L.marker([obj.features[obj.features.length - 1].geometry.coordinates[0][1], obj.features[obj.features.length - 1].geometry.coordinates[0][0]], {icon: flagG}).bindPopup('Ende')); 
+  layers.addLayer(L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]], {icon: flagG}).bindPopup('Start'));
+  layers.addLayer(L.marker([obj.features[obj.features.length - 1].geometry.coordinates[0][1], obj.features[obj.features.length - 1].geometry.coordinates[0][0]], {icon: flagR}).bindPopup('Ende')); 
 
   layerGroups.push(layers);
   
@@ -118,7 +118,7 @@ function addControls(){
 
   var layerControl = {
     "Beispiel Datensatz": layerGroups[0],
-    "Uhr 2": layerGroups[1]
+    "Uhr": layerGroups[1]
   };
 
   layerGroups.forEach(element => {
@@ -134,8 +134,8 @@ function mapload() {
 
   map = L.map('map_canvas', {
 
-    center : [48.77339324913919, 9.172363495454192],
-    zoom: 16
+    center : [48.7829184,9.2130416],
+    zoom: 14
 
   });
 
@@ -149,11 +149,18 @@ function mapload() {
 
   legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
-    div.innerHTML += 'Puls zwischen <br>';
+    div.innerHTML += 'Puls <br>';
 
-    //d > 110 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+    //return d > 144 ? '#000': d > 140 ? '#700600': d > 134 ? '#d11800' : d > 124 ? '#d13800' : d > 109 ? '#d15700' : d > 90 ? '#d17d00' :
+    //       d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+ 
+ 
 
-    div.innerHTML +='<i style="background: #ad0900' + '"></i> > 110 BpM<br>'
+    div.innerHTML +='<i style="background: #000' + '"></i> > 145 BpM<br>'
+                  + '<i style="background: #700600' + '"></i> 141-144 BpM<br>'
+                  + '<i style="background: #d11800' + '"></i> 135-140 BpM<br>'
+                  + '<i style="background: #d13800' + '"></i> 125-134 BpM<br>'
+                  + '<i style="background: #d15700' + '"></i> 110-124 BpM<br>'
                   + '<i style="background: #d17d00' + '"></i> 91-109 BpM<br>'
                   + '<i style="background: #9fad00' + '"></i> 71-90 BpM<br>'
                   + '<i style="background: #00ad0c' + '"></i> 41-70 BpM<br>';
