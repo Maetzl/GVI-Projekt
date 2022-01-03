@@ -118,7 +118,8 @@ function addControls(){
 
   var layerControl = {
     "Beispiel Datensatz": layerGroups[0],
-    "Uhr": layerGroups[1]
+    "LIT": layerGroups[1],
+    "HIT": layerGroups[2]
   };
 
   layerGroups.forEach(element => {
