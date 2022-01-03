@@ -1,4 +1,22 @@
 var map;
+var layerGroups = [];
+var flagR = L.icon({
+  iconUrl: './icons/flagRed.png',
+
+  iconSize:     [32, 32],
+  iconAnchor:   [5, 25],
+  popupAnchor:  [11, -12] 
+
+})
+
+var flagG = L.icon({
+  iconUrl: './icons/flagGreen.png',
+
+  iconSize:     [32, 32],
+  iconAnchor:   [5, 25], 
+  popupAnchor:  [11, -12] 
+
+})
 
 function initialize() {
   var text, obj;
@@ -7,10 +25,10 @@ function initialize() {
 
   mapload();
 
-  for (let index = 0; index < files.length; index++) {
+  for (let indexF = 0; indexF < files.length; indexF++) {
     var client = new XMLHttpRequest();
 
-    client.open('GET', files[index], false);
+    client.open('GET', files[indexF], false);
 
     client.onload = function () {
       var response = client.responseText,
@@ -48,19 +66,31 @@ function initialize() {
       text += ']}';
       obj = JSON.parse(text);
       addRoutes(obj);
+
+      if(indexF == (files.length - 1))
+      {
+        addControls();
+      }
+
     };
+    
     client.send();
   }
 }
 
+
 function addRoutes(obj) {
-  console.log(obj);
+  //console.log(obj);
+  
+  var layers = L.layerGroup();
+
   function onEachFeature(feature, layer) {
     layer.bindPopup('<h4>' + '</h4><p>Puls: ' + feature.properties.Heartrate + ' BpM');
+    layers.addLayer(layer);
   }
 
   function getColor(d) {
-    return d > 110 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+    return d > 109 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
   }
 
   function style(feature) {
@@ -73,47 +103,65 @@ function addRoutes(obj) {
   L.geoJSON(obj, {
     onEachFeature: onEachFeature,
     style: style
-  }).addTo(map);
+  });
 
-  L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]]).bindPopup('Start').addTo(map);
-  L.marker([obj.features[obj.features.length - 1].geometry.coordinates[0][1], obj.features[obj.features.length - 1].geometry.coordinates[0][0]])
-    .bindPopup('Ende')
-    .addTo(map);
 
-  var legend = L.control({ position: 'bottomleft' });
+  layers.addLayer(L.marker([obj.features[0].geometry.coordinates[0][1], obj.features[0].geometry.coordinates[0][0]], {icon: flagR}).bindPopup('Start'));
+  layers.addLayer(L.marker([obj.features[obj.features.length - 1].geometry.coordinates[0][1], obj.features[obj.features.length - 1].geometry.coordinates[0][0]], {icon: flagG}).bindPopup('Ende')); 
 
-  legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info legend');
-    //div.innerHTML += 'Baujahr <br>';
-    // loop through our density intervals and generate a label with a colored square for each interval
-    //for (var i = 10; i < years.length; i += 10) {
-    //  if (i != 90) {
-    //    div.innerHTML +=
-    //      '<i style="background:' + getColor(years[i]) + '"></i> ' +
-    //      years[i - 10] + "-" + years[i] + '<br>';
-    //  }
-    //  else {
-    //    div.innerHTML +=
-    //      '<i style="background:' + getColor(years[i]) + '"></i> ' +
-    //      years[i - 10] + "-" + years[93] + '<br>';
-    //  }
-    //
-    //}
+  layerGroups.push(layers);
+  
+}
 
-    return div;
+function addControls(){
+  console.log(layerGroups);
+
+  var layerControl = {
+    "Beispiel Datensatz": layerGroups[0],
+    "Uhr 2": layerGroups[1]
   };
 
-  legend.addTo(map);
+  layerGroups.forEach(element => {
+    
+    element.addTo(map)
+
+  });
+
+  L.control.layers(null,  layerControl).addTo(map);
 }
 
 function mapload() {
-  map = L.map('map_canvas').setView([48.77339324913919, 9.172363495454192], 16);
+
+  map = L.map('map_canvas', {
+
+    center : [48.77339324913919, 9.172363495454192],
+    zoom: 16
+
+  });
 
   var osm = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>     contributors',
     minZoom: 2,
     maxZoom: 18
   });
+
+  var legend = L.control({ position: 'bottomleft' });
+
+  legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML += 'Puls zwischen <br>';
+
+    //d > 110 ? '#ad0900' : d > 90 ? '#d17d00' : d > 70 ? '#9fad00' : d > 40 ? '#00ad0c' : '#000';
+
+    div.innerHTML +='<i style="background: #ad0900' + '"></i> > 110 BpM<br>'
+                  + '<i style="background: #d17d00' + '"></i> 91-109 BpM<br>'
+                  + '<i style="background: #9fad00' + '"></i> 71-90 BpM<br>'
+                  + '<i style="background: #00ad0c' + '"></i> 41-70 BpM<br>';
+
+    return div;
+  };
+
+  legend.addTo(map);
 
   map.addLayer(osm);
 }
