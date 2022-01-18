@@ -2,6 +2,10 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+  <script src="./index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 
 <style>
@@ -23,12 +27,10 @@
     opacity: 0.7;
   }
 </style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
-<script src="./index.js"></script>
 
 <body onload="initialize()">
   <div id="map_canvas" style="width: 1500px; height: 1000px;"></div>
+  <div id="chart"></div>
 </body>
 
 </html>
