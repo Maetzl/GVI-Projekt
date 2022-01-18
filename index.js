@@ -417,6 +417,9 @@ console.log(maxSize)
       align: "middle",
     },
     tooltip: {
+      enabled:true,
+      followCursor: true,
+      shared:false,
       y: {
         formatter: function (val) {
           if(val != undefined){
