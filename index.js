@@ -256,7 +256,7 @@ function initialize() {
       }
 
       if (indexF == files.length - 1) {
-        addControls();
+        addControls(names);
         addChart();
       }
     };
@@ -298,15 +298,13 @@ function addRoutes(obj) {
   layerGroups.push(layers);
 }
 
-function addControls() {
+function addControls(names) {
   console.log(layerGroups);
+  var layerControl= {};
 
-  var layerControl = {
-    'Beispiel Datensatz': layerGroups[0],
-    LIT: layerGroups[1],
-    HIT: layerGroups[2],
-    Huawei: layerGroups[3]
-  };
+  for (let i = 0; i < layerGroups.length; i++) {
+    layerControl[names[i]] = layerGroups[i];
+  }
 
   layerGroups.forEach((element) => {
     element.addTo(map);
