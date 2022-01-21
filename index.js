@@ -20,8 +20,8 @@ var flagG = L.icon({
 function initialize() {
   var text, obj;
 
-  var files = ['./data/BSP_Datensatz.gpx', './data/Track1.gpx', './data/Track2.gpx', './data/Huawei.tcx'];
-  var names = ['Beispieldatensatz', 'LIT','HIT','Huawei Watch',]
+  var files = ['./data/BSP_Datensatz.gpx', './data/Track1.gpx', './data/Track2.gpx', './data/Huawei.tcx', './data/HuaweiFirstRunReal.tcx', './data/HuaweiSecondRunReal.tcx', './data/GarminFirstRunReal.gpx', './data/GarminSecondRunReal.gpx'];
+  var names = ['Beispieldatensatz', 'LIT', 'HIT', 'Huawei Watch', 'Vergleich_Huawei_1', 'Vergleich_Huawei_2', 'Vergleich_Garmin_1', 'Vergleich_Garmin_2']
 
   mapload();
 
@@ -350,7 +350,7 @@ function addChart()
   var maxSize = objects[0].features.length;
   
 
-  for (var i = 0; i < objects.length; i++) {
+  for (var i = 4; i < objects.length; i++) {
     if(objects[i].features.length >= maxSize)
     {
       maxSize = objects[i].features.length;
