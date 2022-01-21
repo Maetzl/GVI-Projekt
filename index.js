@@ -369,30 +369,13 @@ function addChart()
       }
     }
 
-    chartData.push(a);
+    chartData.push({name:objects[i].name ,data:a});
   }
 
 console.log(maxSize)
 
   var options = {
-    series: [{
-      name: objects[0].name,
-      data: chartData[0],
-    },
-    {
-      name: objects[1].name,
-      data: chartData[1],
-    },
-    {
-      name: objects[2].name,
-      data: chartData[2],
-    },    
-    {
-      name: objects[3].name,
-      data: chartData[3],
-    }
-  
-  ],
+    series: chartData,
     chart: {
       animations: {
         enabled: false
