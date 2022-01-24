@@ -146,7 +146,7 @@ function initialize() {
                 }
               }
             }
-          } 
+          }
           else if (xmlDoc.getElementsByTagName('Trackpoint')[index].getElementsByTagName('Position')[0] != null && xmlDoc.getElementsByTagName('Trackpoint')[index].getElementsByTagName('HeartRateBpm')[0] == null) 
           {
             //console.log(index, xmlDoc.getElementsByTagName('Trackpoint')[index].getElementsByTagName('Position')[0].childNodes[1].childNodes[0].nodeValue);
@@ -299,7 +299,7 @@ function addRoutes(obj) {
 }
 
 function addControls(names) {
-  console.log(layerGroups);
+  //console.log(layerGroups);
   var layerControl= {};
 
   for (let i = 0; i < layerGroups.length; i++) {
@@ -355,7 +355,7 @@ function addChart()
     {
       maxSize = objects[i].features.length;
     }
-    console.log(objects[i].name )
+    //console.log(objects[i].name)
     var a = [];
     for (var ii = 0; ii < objects[i].features.length; ii++) {
       if(objects[i].features[ii].properties.Heartrate > 0)
@@ -370,7 +370,7 @@ function addChart()
     chartData.push({name:objects[i].name ,data:a});
   }
 
-console.log(maxSize)
+  //console.log(maxSize)
 
   var options = {
     series: chartData,
